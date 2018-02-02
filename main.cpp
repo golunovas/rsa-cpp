@@ -12,8 +12,8 @@ int main() {
 
 	timer.start();
 	auto faces = rsa.detect(img);
-	std::cout << "Estimated time: " << timer.stop() << std::endl;
-	
+	std::cout << "Elapsed time: " << timer.stop() << std::endl;
+
 	for (auto& face : faces) {
 		std::cout << face.score << std::endl;
 		cv::rectangle(img, face.rect, cv::Scalar(255, 0, 0));
