@@ -19,7 +19,7 @@ inline cv::Mat rotateScaleAlign(cv::Mat src, cv::Mat dst ) {
 		b += point1.x * point2.y - point1.y * point2.x;
 	}
 
-	/* a = k cos theta, b = k sin theta */
+	// a = k cos theta, b = k sin theta
 	a /= d;
 	b /= d;
 
