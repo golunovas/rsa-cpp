@@ -24,28 +24,28 @@ inline cv::Mat rotateScaleAlign(cv::Mat src, cv::Mat dst ) {
 	b /= d;
 
 	cv::Mat R2 = (cv::Mat_<float>(2, 2) <<
-			  a, -b,
-			  b, a);
+			a, -b,
+			b, a);
 
 	return R2;
 }
 
 inline cv::Mat calcSimilarityTransform( const std::vector<cv::Point2f>& points,  const std::vector<cv::Point2f>& refPoints) {
-	cv::Mat mat         = cv::Mat( points ).clone();
-	cv::Mat ref         = cv::Mat( refPoints).clone();
+	cv::Mat mat = cv::Mat( points ).clone();
+	cv::Mat ref = cv::Mat( refPoints).clone();
 	recenter( mat );
 	recenter( ref );
-	cv::Mat rotation    = rotateScaleAlign( mat, ref );
+	cv::Mat rotation = rotateScaleAlign( mat, ref );
 
 	cv::Mat rigid_transform;
 
 	float a = rotation.at<float>(0, 0);
 	float b = rotation.at<float>(1, 0);
 
-	float k             = sqrt( a * a + b * b );
-	float theta         = atan2(b, a);
-	float kcos_theta    = k * cosf( theta );
-	float ksin_theta    = k * sinf( theta );
+	float k = sqrt( a * a + b * b );
+	float theta = atan2(b, a);
+	float kcos_theta = k * cosf( theta );
+	float ksin_theta = k * sinf( theta );
 
 	// x' = cos * x - sin * y + tx
 	// y' = sin * x - cos * y + ty
@@ -53,19 +53,19 @@ inline cv::Mat calcSimilarityTransform( const std::vector<cv::Point2f>& points, 
 	float ty = 0.f;
 	for (int i = 0; i < mat.rows; ++i) {
 		float ttx = refPoints[i].x -
-		kcos_theta * points[i].x +
-		ksin_theta * points[i].y;
+			kcos_theta * points[i].x +
+			ksin_theta * points[i].y;
 		float tty = refPoints[i].y -
-		ksin_theta * points[i].x -
-		kcos_theta * points[i].y;
+			ksin_theta * points[i].x -
+			kcos_theta * points[i].y;
 		tx += ttx;
 		ty += tty;
 	}
 	tx /= (float)mat.rows;
 	ty /= (float)mat.rows;
 	rigid_transform = (cv::Mat_<float>(2, 3) <<
-					   kcos_theta, -ksin_theta, tx,
-					   ksin_theta,  kcos_theta, ty);
+					kcos_theta, -ksin_theta, tx,
+					ksin_theta, kcos_theta, ty);
 
 	return rigid_transform;
 }
