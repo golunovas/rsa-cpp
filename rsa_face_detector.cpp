@@ -86,7 +86,7 @@ std::vector<RSAFace> RSAFaceDetector::detect(cv::Mat img) {
 				float anchorCurrentCenterY = y * FINAL_STRIDE + ANCHOR_CENTER;
 				RSAFace currentFace;
 				currentFace.pts.resize(ANCHOR_PTS.size());
-				for (int p = 0; p < currentFace.pts.size(); ++p) {
+				for (size_t p = 0; p < currentFace.pts.size(); ++p) {
 					float ptsDeltaX = rpnRegBlob->data_at(0, 2 * p, y, x);
 					float ptsDeltaY = rpnRegBlob->data_at(0, 2 * p + 1, y, x);
 					currentFace.pts[p].x = ((ANCHOR_PTS[p].x + ptsDeltaX) * ANCHOR_RECT_SIDE + anchorCurrentCenterX)
@@ -110,7 +110,7 @@ void RSAFaceDetector::setNetInput(boost::shared_ptr< caffe::Net<float> > net, cv
 	std::vector<cv::Mat> channels;
 	cv::split(img, channels);   
 	caffe::Blob<float>* inputLayer = net->input_blobs()[0];
-	assert(inputLayer->channels() == channels.size());
+	assert(inputLayer->channels() == static_cast<int>(channels.size()));
 	if (img.rows != inputLayer->height() || img.cols != inputLayer->width()) {
 		inputLayer->Reshape(1, channels.size(), img.rows, img.cols);
 		net->Reshape();
